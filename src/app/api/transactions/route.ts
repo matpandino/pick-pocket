@@ -10,9 +10,9 @@ export const TransactionCreateInput = z.object({
     categoryId: z.string().optional(),
   })
 
-  export const TransactionGetAllInput = z.object({
-    userId: z.string(),
-  })
+//   export const TransactionGetAllInput = z.object({
+//     userId: z.string(),
+//   })
   
 
 export async function POST(request: NextRequest) {
@@ -35,9 +35,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest, ) {
     try {
-      const userId = await request.nextUrl.searchParams.get('userId')
+    //   const userId = await request.nextUrl.searchParams.get('userId')
   
-      const data = TransactionGetAllInput.parse({userId})
+    //   const data = TransactionGetAllInput.parse({userId})
       const transactions = await prisma.transaction.findMany({
         select: {
             id: true,
@@ -45,12 +45,13 @@ export async function GET(request: NextRequest, ) {
             date: true,
             category: true,
             userId: true,
+            amount: true,
         },
         orderBy: {
             date: 'desc'
         },
         where: {
-            userId: data.userId,
+            // userId: data.userId,
         }
       })
   

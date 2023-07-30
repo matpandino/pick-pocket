@@ -1,11 +1,18 @@
-import { Button } from '@/components/ui/button'
+import { DataTable } from '@/components/transactions/data-table'
+import { columns } from '@/components/transactions/table-columns'
 
-export default function Home() {
+async function getData(): Promise<any> {
+  const res = await fetch('http://localhost:3000/api/transactions')
+
+  const data = await res.json()
+  return data.data
+}
+
+export default async function Home() {
+  const data = await getData()
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-    <div>
-      <Button>Click me</Button>
-    </div>
+    <main className="container dark mx-auto py-10">
+      <DataTable columns={columns} data={data} />
     </main>
   )
 }
