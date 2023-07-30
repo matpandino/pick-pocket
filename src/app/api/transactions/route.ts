@@ -5,8 +5,12 @@ import { z } from 'zod'
 export const TransactionCreateInput = z.object({
     description: z.string(),
     amount: z.number(),
-    date: z.date(),
-    categoryId: z.string(),
+    date: z.coerce.string(),
+    userId: z.string(),
+    categoryId: z.string().optional(),
+  })
+
+  export const TransactionGetAllInput = z.object({
     userId: z.string(),
   })
   
@@ -17,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     const data = TransactionCreateInput.parse(body)
     const createdTransaction = await prisma.transaction.create({
-      data,
+      data
     })
 
     return NextResponse.json({id: createdTransaction.id}, { status: 201 })
@@ -28,3 +32,33 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
+export async function GET(request: NextRequest, ) {
+    try {
+      const userId = await request.nextUrl.searchParams.get('userId')
+  
+      const data = TransactionGetAllInput.parse({userId})
+      const transactions = await prisma.transaction.findMany({
+        select: {
+            id: true,
+            description: true,
+            date: true,
+            category: true,
+            userId: true,
+        },
+        orderBy: {
+            date: 'desc'
+        },
+        where: {
+            userId: data.userId,
+        }
+      })
+  
+      return NextResponse.json({data: transactions}, { status: 200 })
+    } catch (error) {
+      return NextResponse.json(
+        { message: 'Failed to get transactions', details: error },
+        { status: 404 },
+      )
+    }
+  }
