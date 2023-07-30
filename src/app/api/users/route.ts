@@ -14,14 +14,14 @@ export async function POST(request: NextRequest) {
     const body: typeof UserCreateInput = await request.json()
 
     const data = UserCreateInput.parse(body)
-    await prisma.user.create({
+    const createdUser = await prisma.user.create({
       data,
     })
 
-    return NextResponse.json({}, { status: 201 })
+    return NextResponse.json({id: createdUser.id}, { status: 201 })
   } catch (error) {
     return NextResponse.json(
-      { message: 'Failed to create product', details: error },
+      { message: 'Failed to create user', details: error },
       { status: 404 },
     )
   }
